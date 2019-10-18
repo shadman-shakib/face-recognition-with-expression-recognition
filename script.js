@@ -43,7 +43,7 @@ async function start() {
     faceapi.draw.drawDetections(canvas, resizedDetections2)
     faceapi.draw.drawFaceLandmarks(canvas, resizedDetections2)
     faceapi.draw.drawFaceExpressions(canvas, resizedDetections2)
-    console.log(faceapi.FaceExpressions(canvas, resizedDetections2))
+    //console.log(faceapi.FaceExpressions(canvas, resizedDetections2))
   })
 }
 
