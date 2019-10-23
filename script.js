@@ -16,6 +16,8 @@ async function start() {
   const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
   let image
   let canvas
+  let name
+  let expression
   document.body.append('Loaded')
   imageUpload.addEventListener('change', async () => {
     if (image) image.remove()
@@ -30,20 +32,30 @@ async function start() {
     const resizedDetections = faceapi.resizeResults(detections, displaySize)
     const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
     results.forEach((result, i) => {
+      name = result.toString()
       console.log(result.toString())
       const box = resizedDetections[i].detection.box
       const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString() })
       drawBox.draw(canvas)
     })
-    container.append(image)
+    //container.append(image)
     container.append(canvas)
     const detections2 = await faceapi.detectAllFaces(image, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
     const resizedDetections2 = faceapi.resizeResults(detections2, displaySize)
+    //console.log(resizedDetections2[0].expressions)
+    resizedDetections2.forEach((result2,i) => {
+      //console.log(resizedDetections2[i])
+      console.log(result2.expressions)
+      expression = result2.expressions
+    }
+    )
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
     faceapi.draw.drawDetections(canvas, resizedDetections2)
     faceapi.draw.drawFaceLandmarks(canvas, resizedDetections2)
     faceapi.draw.drawFaceExpressions(canvas, resizedDetections2)
-    console.log(faceapi.FaceExpressions(canvas, resizedDetections2))
+    //const results2 = resizedDetections2.map(d => faceMatcher.findBestMatch(d.descriptor))
+    expression = resizedDetections2[0].expressions
+    //insert(name,expression)
   })
 }
 
@@ -61,4 +73,23 @@ function loadLabeledImages() {
       return new faceapi.LabeledFaceDescriptors(label, descriptions)
     })
   )
+}
+function insert(name,expression) {
+  $.ajax({
+  type: 'POST',
+  url: 'insert.php',
+  data: {
+      name:name,
+      expression:expression
+  },
+  error: function (xhr, status) {
+      alert(status);
+  },
+  success: function(response) {
+      //alert(response);
+      //alert("Status Accepted");
+      //alert(response);
+      location.reload();
+  }
+});
 }
