@@ -53,9 +53,13 @@ async function start() {
     faceapi.draw.drawDetections(canvas, resizedDetections2)
     faceapi.draw.drawFaceLandmarks(canvas, resizedDetections2)
     faceapi.draw.drawFaceExpressions(canvas, resizedDetections2)
+<<<<<<< HEAD
     //const results2 = resizedDetections2.map(d => faceMatcher.findBestMatch(d.descriptor))
     expression = resizedDetections2[0].expressions
     //insert(name,expression)
+=======
+    //console.log(faceapi.FaceExpressions(canvas, resizedDetections2))
+>>>>>>> ef9d87943099e0b59c3d61adba2aea83d7883dd1
   })
 }
 
