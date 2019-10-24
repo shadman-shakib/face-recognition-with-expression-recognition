@@ -1,5 +1,6 @@
-const imageUpload = document.getElementById('imageUpload')
+const imageUpload = document.getElementById('imageUpload') //assigning the uploaded image into imageUpload
 
+//adding models
 Promise.all([
   faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
   faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
@@ -8,12 +9,13 @@ Promise.all([
   faceapi.nets.faceExpressionNet.loadFromUri('/models')
 ]).then(start)
 
+//function start 
 async function start() {
   const container = document.createElement('div')
   container.style.position = 'relative'
   document.body.append(container)
-  const labeledFaceDescriptors = await loadLabeledImages()
-  const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
+  const labeledFaceDescriptors = await loadLabeledImages() //it'll call the image with label those are in folder
+  const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6) //load the face to match
   let image
   let canvas
   let name
@@ -33,7 +35,7 @@ async function start() {
     const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
     results.forEach((result, i) => {
       name = result.toString()
-      console.log(result.toString())
+      console.log(result.toString()) //showing result in console. showing the name
       const box = resizedDetections[i].detection.box
       const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString() })
       drawBox.draw(canvas)
@@ -45,7 +47,7 @@ async function start() {
     //console.log(resizedDetections2[0].expressions)
     resizedDetections2.forEach((result2,i) => {
       //console.log(resizedDetections2[i])
-      console.log(result2.expressions)
+      console.log(result2.expressions) //showing the expressions result in console
       expression = result2.expressions
     }
     )
@@ -53,23 +55,20 @@ async function start() {
     faceapi.draw.drawDetections(canvas, resizedDetections2)
     faceapi.draw.drawFaceLandmarks(canvas, resizedDetections2)
     faceapi.draw.drawFaceExpressions(canvas, resizedDetections2)
-<<<<<<< HEAD
     //const results2 = resizedDetections2.map(d => faceMatcher.findBestMatch(d.descriptor))
     expression = resizedDetections2[0].expressions
     //insert(name,expression)
-=======
-    //console.log(faceapi.FaceExpressions(canvas, resizedDetections2))
->>>>>>> ef9d87943099e0b59c3d61adba2aea83d7883dd1
   })
 }
 
 function loadLabeledImages() {
-  const labels = ['Black Widow', 'Captain America', 'Captain Marvel', 'Hawkeye', 'Jim Rhodes', 'Thor', 'Tony Stark','Ruhul']
+  const labels = ['Black Widow', 'Captain America', 'Captain Marvel', 'Hawkeye', 'Jim Rhodes', 'Thor', 'Tony Stark','Ruhul'] //add new lebeled folder here
   return Promise.all(
     labels.map(async label => {
       const descriptions = []
       for (let i = 1; i <= 2; i++) {
-        const img = await faceapi.fetchImage(`https://raw.githubusercontent.com/ruhul0/Face-Detection/master/labeled_images/${label}/${i}.jpg`)
+        //fetching data from online. you can replace this with local directory
+        const img = await faceapi.fetchImage(`https://raw.githubusercontent.com/ruhul0/Face-Detection/master/labeled_images/${label}/${i}.jpg`) 
         const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor()
         descriptions.push(detections.descriptor)
       }
@@ -78,6 +77,7 @@ function loadLabeledImages() {
     })
   )
 }
+//api call to pass data to php page
 function insert(name,expression) {
   $.ajax({
   type: 'POST',
